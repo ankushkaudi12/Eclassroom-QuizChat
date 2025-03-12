@@ -1,19 +1,17 @@
-const mysql = require("mysql2");
-require('dotenc').config();
+import mysql from 'mysql2';
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const db = mysql.createConnection({
-    host: process.env.DB_HOST,
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.join(__dirname, '../.env') });
+
+const db = mysql.createPool({
     user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
+    host: process.env.DB_HOST,
+    database: process.env.DB_NAME,
+    password: process.env.DB_PASS,
 })
 
-db.connect(err => {
-    if (err) {
-        console.error('Database Connection error: ', err);
-        process.exit(1);
-    }
-    console.log('Connected to database at port: ', process.env.PORT);
-})
-
-module.exports = db;
+export default db;
