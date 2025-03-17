@@ -1,4 +1,4 @@
-import db from '../database/connection'
+const db = require('../database/connection')
 
 const saveComment = async (classroomId, sender, comment) => {
     try {

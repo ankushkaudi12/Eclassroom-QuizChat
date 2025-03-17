@@ -1,5 +1,12 @@
-import express from 'express';
+const express = require('express');
+const { saveComment, getComments } = require('../controllers/commentControllers');
 
-const router = express.Router()
+const router = express.Router();
 
-export default router;
+/* POST methods*/
+router.post('/comments/add', saveComment);
+
+/* GET methods */
+router.get('/comments/:classroom_id', getComments);
+
+module.exports = router;
