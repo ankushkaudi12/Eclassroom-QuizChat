@@ -7,6 +7,7 @@ const router = require('./routes/router.js');
 const dotenv = require('dotenv');
 const path = require('path');
 const handleSocket = require('./socket.js');
+const { Socket } = require('dgram');
 
 const corsOptions = {
     origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
@@ -25,17 +26,18 @@ dotenv.config({ path: path.join(__dirname, '.env') });
 
 const PORT = process.env.PORT || 3000;
 
-db.getConnection((err, connection) => {
-    if (err) {
-        console.error('Error connecting to database:', err);
-    } else {
-        console.log('Database connection established');
+db.getConnection().then(() => {
+    console.log('Database connected');
 
-        server.listen(PORT, () => { // Fixed to listen on `server`
-            console.log(`Listening on port ${PORT}`);
-        });
-    }
-});
+    server.listen(PORT, () => {
+        console.log(`Server running on http://localhost:${PORT}`);
+    });
+
+    handleSocket(server);
+}).catch((err) => {
+    console.error('Database connection failed: ', err);
+    process.exit(1);
+})
 
 app.get('/', (req, res) => {
     res.status(200).send('Connected');
