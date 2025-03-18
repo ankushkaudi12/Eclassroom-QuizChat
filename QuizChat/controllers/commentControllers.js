@@ -1,5 +1,6 @@
 const db = require("../database/connection");
 
+// saves comment to database
 const saveComment = async (req, res) => {
   const { classroom_id, sender, comment } = req.body;
   try {
@@ -14,11 +15,10 @@ const saveComment = async (req, res) => {
   }
 };
 
-const getComments = async (req, res) => {
-  const classroomId = String(req.params.classroom_id); // Ensure it's a string
-
+// retrieves comments from database based on classroom_id
+const getComments = async (classroomId) => {
   if (!classroomId) {
-    return res.status(400).json({ error: "classroom_id is required" });
+    throw new Error("classroom_id is required");
   }
 
   try {
@@ -27,10 +27,10 @@ const getComments = async (req, res) => {
       "SELECT * FROM classroom_comments WHERE classroom_id = ?",
       [classroomId]
     );
-    res.status(200).json(comments);
+    return comments;
   } catch (err) {
     console.error("Error fetching comments:", err);
-    res.status(500).json({ error: "Failed to fetch comments" });
+    throw new Error("Failed to fetch comments");
   }
 };
 
