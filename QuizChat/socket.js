@@ -1,8 +1,5 @@
 const WebSocket = require("ws");
-const {
-  saveComment,
-  getComments,
-} = require("./controllers/commentControllers");
+const { saveComment, getComments } = require("./controllers/commentControllers");
 
 const handleSocket = (server) => {
   const wss = new WebSocket.Server({ server });
@@ -15,10 +12,9 @@ const handleSocket = (server) => {
 
       if (message.type === "join") {
         const { classroomId } = message;
-        ws.classroomId = classroomId; // Store classroomId in WebSocket object
+        ws.classroomId = classroomId;
         console.log(`🔹 User joined classroom: ${classroomId}`);
 
-        // Fetch past comments dynamically
         try {
           const pastComments = await getComments(classroomId);
           ws.send(JSON.stringify({ type: "pastComments", data: pastComments }));
@@ -27,22 +23,17 @@ const handleSocket = (server) => {
           ws.send(JSON.stringify({ error: "Failed to load past comments" }));
         }
       } else if (message.type === "newComment") {
-        const { classroomId, sender, comment } = message;
+        const { classroomId, sender, comment, time } = message;
 
         try {
           await saveComment(classroomId, sender, comment);
 
-          const newComment = { classroomId, sender, comment, time: new Date() };
+          const newComment = { sender, comment, time: new Date().toISOString() };
+          console.log("📢 Broadcasting new comment:", newComment);
 
-          // Send new comment to all clients in the same classroom
           wss.clients.forEach((client) => {
-            if (
-              client.readyState === WebSocket.OPEN &&
-              client.classroomId === classroomId
-            ) {
-              client.send(
-                JSON.stringify({ type: "newComment", data: newComment })
-              );
+            if (client.readyState === WebSocket.OPEN && client.classroomId === classroomId) {
+              client.send(JSON.stringify({ type: "newComment", data: newComment }));
             }
           });
         } catch (err) {

@@ -1,17 +1,16 @@
 const db = require("../database/connection");
 
 // saves comment to database
-const saveComment = async (req, res) => {
-  const { classroom_id, sender, comment } = req.body;
+const saveComment = async (classroom_id, sender, comment) => {
   try {
     await db.execute(
       "INSERT INTO classroom_comments (classroom_id, sender, comment) VALUES (?, ?, ?)",
       [classroom_id, sender, comment]
     );
-    res.status(201).json({ message: "Comment added successfully" });
+    return { message: "Comment added successfully" }; // No Express response here
   } catch (error) {
-    console.error("Error saving comment:", error);
-    res.status(500).json({ message: "Failed to save comment" });
+    console.error("❌ Error saving comment:", error);
+    throw new Error("Failed to save comment"); // Throw an error instead of res.json()
   }
 };
 
@@ -24,7 +23,7 @@ const getComments = async (classroomId) => {
   try {
     console.log("Fetching comments for classroom_id:", classroomId);
     const [comments] = await db.query(
-      "SELECT * FROM classroom_comments WHERE classroom_id = ?",
+      "SELECT * FROM classroom_comments WHERE classroom_id = ? ORDER BY time DESC",
       [classroomId]
     );
     return comments;
