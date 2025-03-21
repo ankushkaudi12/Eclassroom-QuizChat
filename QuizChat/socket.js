@@ -1,5 +1,5 @@
 const WebSocket = require("ws");
-const { saveComment, getComments } = require("./controllers/commentControllers");
+const { saveComment, getComments, deleteComment } = require("./controllers/commentControllers");
 
 const handleSocket = (server) => {
   const wss = new WebSocket.Server({ server });
@@ -39,6 +39,22 @@ const handleSocket = (server) => {
         } catch (err) {
           console.error("❌ Error processing comment: ", err);
           ws.send(JSON.stringify({ error: "Failed to process comment" }));
+        }
+      } else if (message.type == "deleteComment") {
+        const {classroomId, id} = message;
+
+        try {
+          await deleteComment(id);
+          console.log(`Deleting comment: ${id}`);
+
+          wss.clients.forEach((client) => {
+            if (client.readyState == WebSocket.OPEN && client.classroomId === classroomId) {
+              client.send(JSON.stringify({ type: "deleteComment", id }));
+            }
+          });
+        } catch (err) {
+          console.error("Error deleting comment:", err);
+          ws.send(JSON.stringify({error: "Failed to delete comment"}));
         }
       }
     });

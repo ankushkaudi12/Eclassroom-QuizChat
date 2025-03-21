@@ -33,4 +33,14 @@ const getComments = async (classroomId) => {
   }
 };
 
-module.exports = { saveComment, getComments };
+const deleteComment = async (commentId) => {
+  try {
+    await db.query("DELETE FROM classroom_comments WHERE id = ?", [commentId]);
+    console.log(`Comment ${commentId} deleted`);
+  } catch (err) {
+    console.error("Error deleting comment", err);
+    throw err;
+  }
+}
+
+module.exports = { saveComment, getComments, deleteComment };
