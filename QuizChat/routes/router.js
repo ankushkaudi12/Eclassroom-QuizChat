@@ -1,12 +1,9 @@
 const express = require('express');
-const { saveComment, getComments } = require('../controllers/commentControllers');
+const { addAnnouncements } = require('../controllers/announcementsController');
 
 const router = express.Router();
 
 /* POST methods*/
-router.post('/comments/add', saveComment);
-
-/* GET methods */
-router.get('/comments/:classroom_id', getComments);
+router.post('/announcements/add', addAnnouncements);
 
 module.exports = router;
