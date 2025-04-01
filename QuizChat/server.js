@@ -56,3 +56,54 @@ app.use("/api", router);
 app.get("/", (req, res) => {
   res.status(200).send("Connected");
 });
+
+app.get("/uploads/:attachment", (req, res) => {
+  const filePath = path.join(__dirname, "uploads", req.params.attachment);
+  console.log(`📂 Attempting to download file: ${filePath}`);
+
+  // Check if file exists
+  if (fs.existsSync(filePath)) {
+    console.log("✅ File exists, initiating download...");
+
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${path.basename(filePath)}"`
+    );
+    res.setHeader("Content-Type", "application/octet-stream");
+
+    res.download(filePath, (err) => {
+      if (err) {
+        console.error("❌ Error downloading file:", err);
+        res.status(500).send("File download failed.");
+      }
+    });
+  } else {
+    console.error("❌ File not found:", filePath);
+    res.status(404).send("File not found.");
+  }
+});
+
+app.get("/api/download/:attachment", (req, res) => {
+  const filePath = path.join(__dirname, "uploads", req.params.attachment);
+  console.log(`📂 Attempting to download file: ${filePath}`);
+
+  if (fs.existsSync(filePath)) {
+    console.log("✅ File exists, sending response...");
+
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${path.basename(filePath)}"`
+    );
+    res.setHeader("Content-Type", "application/octet-stream");
+
+    res.download(filePath, (err) => {
+      if (err) {
+        console.error("❌ Error sending file:", err);
+        res.status(500).send("File download failed.");
+      }
+    });
+  } else {
+    console.error("❌ File not found:", filePath);
+    res.status(404).send("File not found.");
+  }
+});

@@ -34,4 +34,20 @@ const addAnnouncements = async (req, res) => {
   }
 };
 
-module.exports = { addAnnouncements, upload };
+const getAnnouncements = async (req, res) => {
+  const { classroom_id } = req.params;
+
+  try {
+    const [announcements] = await db.execute(
+      "SELECT * FROM announcements WHERE classroom_id = ?",
+      [classroom_id]
+    );
+    console.log("Announcements fetched successfully");
+    return res.status(201).json(announcements);
+  } catch (error) {
+    console.error("Error fetching announcements: ", error);
+    return res.status(500).json({ error: "Error fetching announcement" });
+  }
+};
+
+module.exports = { addAnnouncements, upload, getAnnouncements };
