@@ -50,4 +50,19 @@ const getAnnouncements = async (req, res) => {
   }
 };
 
-module.exports = { addAnnouncements, upload, getAnnouncements };
+const deleteAnnouncement = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    await db.execute("DELETE FROM announcements WHERE id = ?", [id]);
+    console.log(`Announcement with ID ${id} deleted successfully`);
+    return res
+      .status(200)
+      .json({ message: "Announcement deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting announcement: ", error);
+    return res.status(500).json({ error: "Error deleting announcement" });
+  }
+};
+
+module.exports = { addAnnouncements, upload, getAnnouncements, deleteAnnouncement };
