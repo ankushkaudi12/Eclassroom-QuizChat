@@ -50,6 +50,36 @@ const getAnnouncements = async (req, res) => {
   }
 };
 
+const updateAnnouncement = async (req, res) => {
+  const { id } = req.params;
+  const { subject, description, classroom_id } = req.body;
+  const attachment = req.file ? req.file.filename : null;
+
+  try {
+    if (attachment) {
+      // If a new file is uploaded, update the attachment too
+      await db.execute(
+        "UPDATE announcements SET subject = ?, description = ?, attachment = ?, classroom_id = ? WHERE id = ?",
+        [subject, description, attachment, classroom_id, id]
+      );
+    } else {
+      // No new file uploaded, preserve the existing attachment
+      await db.execute(
+        "UPDATE announcements SET subject = ?, description = ?, classroom_id = ? WHERE id = ?",
+        [subject, description, classroom_id, id]
+      );
+    }
+
+    console.log(`📢 Announcement with ID ${id} updated successfully`);
+    return res
+      .status(200)
+      .json({ message: "Announcement updated successfully" });
+  } catch (error) {
+    console.error("❌ Error updating announcement: ", error);
+    return res.status(500).json({ error: "Error updating announcement" });
+  }
+};
+
 const deleteAnnouncement = async (req, res) => {
   const { id } = req.params;
 
@@ -65,4 +95,10 @@ const deleteAnnouncement = async (req, res) => {
   }
 };
 
-module.exports = { addAnnouncements, upload, getAnnouncements, deleteAnnouncement };
+module.exports = {
+  addAnnouncements,
+  upload,
+  getAnnouncements,
+  deleteAnnouncement,
+  updateAnnouncement,
+};
