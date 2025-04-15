@@ -1,5 +1,9 @@
 const WebSocket = require("ws");
-const { saveComment, getComments, deleteComment } = require("./controllers/commentControllers");
+const {
+  saveComment,
+  getComments,
+  deleteComment,
+} = require("./controllers/commentControllers");
 
 const handleSocket = (server) => {
   const wss = new WebSocket.Server({ server });
@@ -23,17 +27,20 @@ const handleSocket = (server) => {
           ws.send(JSON.stringify({ error: "Failed to load past comments" }));
         }
       } else if (message.type === "newComment") {
-        const { classroomId, sender, comment, time } = message;
+        const { classroomId, sender, comment } = message;
 
         try {
-          await saveComment(classroomId, sender, comment);
-
-          const newComment = { sender, comment, time: new Date().toISOString() };
-          console.log("📢 Broadcasting new comment:", newComment);
+          const savedComment = await saveComment(classroomId, sender, comment);
+          console.log("📢 Broadcasting new comment:", savedComment);
 
           wss.clients.forEach((client) => {
-            if (client.readyState === WebSocket.OPEN && client.classroomId === classroomId) {
-              client.send(JSON.stringify({ type: "newComment", data: newComment }));
+            if (
+              client.readyState === WebSocket.OPEN &&
+              client.classroomId === classroomId
+            ) {
+              client.send(
+                JSON.stringify({ type: "newComment", data: savedComment })
+              );
             }
           });
         } catch (err) {
@@ -41,20 +48,23 @@ const handleSocket = (server) => {
           ws.send(JSON.stringify({ error: "Failed to process comment" }));
         }
       } else if (message.type == "deleteComment") {
-        const {classroomId, id} = message;
+        const { classroomId, id } = message;
 
         try {
           await deleteComment(id);
           console.log(`Deleting comment: ${id}`);
 
           wss.clients.forEach((client) => {
-            if (client.readyState == WebSocket.OPEN && client.classroomId === classroomId) {
+            if (
+              client.readyState == WebSocket.OPEN &&
+              client.classroomId === classroomId
+            ) {
               client.send(JSON.stringify({ type: "deleteComment", id }));
             }
           });
         } catch (err) {
           console.error("Error deleting comment:", err);
-          ws.send(JSON.stringify({error: "Failed to delete comment"}));
+          ws.send(JSON.stringify({ error: "Failed to delete comment" }));
         }
       }
     });
