@@ -26,7 +26,7 @@ const addQuiz = async (req, res) => {
 
 const getQuizzes = async (req, res) => {
     const course_id = +req.params.course_id;
-    
+
     try {
         const [result] = await db.execute(
             "SELECT * FROM quizzes WHERE course_id = ?", [course_id]);
@@ -38,4 +38,25 @@ const getQuizzes = async (req, res) => {
     }
 }
 
-module.exports = { addQuiz, getQuizzes };
+const deleteQuiz = async (req, res) => {
+    const quiz_id = req.params.id;
+    console.log("Quiz ID:", quiz_id);
+
+    if (!quiz_id) {
+        return res.status(400).json({ error: "Missing quiz ID in request URL." });
+    }
+
+    try {
+        const [result] = await db.execute(
+            "DELETE FROM quizzes WHERE id = ?", [quiz_id]
+        );
+
+        return res.status(200).json({ message: "✅ Quiz deleted successfully" });
+    } catch (error) {
+        console.error("❌ Error deleting quiz:", error);
+        return res.status(500).json({ error: "Failed to delete quiz" });
+    }
+};
+
+
+module.exports = { addQuiz, getQuizzes, deleteQuiz };
