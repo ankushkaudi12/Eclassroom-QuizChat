@@ -1,8 +1,11 @@
 const db = require("../database/connection");
 
 const formatDateTime = (date) => {
-    return new Date(date).toISOString().slice(0, 19).replace('T', ' ');
+    const d = new Date(date);
+    if (isNaN(d)) throw new RangeError("Invalid time value");
+    return d.toISOString().slice(0, 19).replace('T', ' ');
 };
+
 
 const addQuiz = async (req, res) => {
     const { name, description, course_id, start_time, end_time } = req.body;
@@ -58,5 +61,29 @@ const deleteQuiz = async (req, res) => {
     }
 };
 
+const editQuiz = async (req, res) => {
+    const quiz_id = req.params.id;
+    console.log("Quiz ID:", quiz_id);
+    
+    let {name, description, course_id, start_time, end_time} = req.body;
+    start_time = formatDateTime(start_time);
+    end_time = formatDateTime(end_time);
 
-module.exports = { addQuiz, getQuizzes, deleteQuiz };
+    try {
+        const [result] = await db.execute(
+            "UPDATE quizzes SET name = ?, description = ?, start_time = ?, end_time = ? WHERE id = ?",
+            [name, description, start_time, end_time, quiz_id]
+        );
+
+        if (result.affectedRows.length === 0) {
+            return res.status(404).json({ error: "Quiz not found" });
+        }
+        res.status(200).json({ message: "✅ Quiz updated successfully" });
+    } catch (error) {
+        console.error("❌ Error updating quiz:", error);
+        res.status(500).json({ error: "Failed to update quiz" });
+    }
+}
+
+
+module.exports = { addQuiz, getQuizzes, deleteQuiz, editQuiz };

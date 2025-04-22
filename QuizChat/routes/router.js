@@ -1,6 +1,6 @@
 const express = require("express");
 const { addAnnouncements, upload, getAnnouncements, deleteAnnouncement, updateAnnouncement } = require("../controllers/announcementsController");
-const { addQuiz, getQuizzes, deleteQuiz } = require("../controllers/quizController");
+const { addQuiz, getQuizzes, deleteQuiz, editQuiz } = require("../controllers/quizController");
 
 const router = express.Router();
 
@@ -18,5 +18,6 @@ router.delete("/quiz/delete/:id", deleteQuiz);
 
 /* PUT methods */
 router.post("/announcements/update/:id", upload.single("file"), updateAnnouncement);
+router.put("/quiz/update/:id", editQuiz);
 
 module.exports = router;
