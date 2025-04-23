@@ -45,4 +45,18 @@ const addQuestions = async (req, res) => {
     }
 };
 
-module.exports = { addQuestions };
+const getQuestions = async (req, res) => {
+    const quiz_id = +req.params.quiz_id;
+
+    try {
+        const [result] = await db.execute(
+            "SELECT id, question, option1, option2, option3, option4 FROM questions WHERE quiz_id = ?", [quiz_id]);
+
+        res.status(200).json(result);
+    } catch (error) {
+        console.error("❌ Error fetching questions:", error);
+        res.status(500).json({ error: "Failed to fetch questions" });
+    }
+}
+
+module.exports = { addQuestions, getQuestions };

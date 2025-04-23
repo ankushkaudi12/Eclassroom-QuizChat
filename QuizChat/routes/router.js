@@ -1,7 +1,7 @@
 const express = require("express");
 const { addAnnouncements, upload, getAnnouncements, deleteAnnouncement, updateAnnouncement } = require("../controllers/announcementsController");
 const { addQuiz, getQuizzes, deleteQuiz, editQuiz } = require("../controllers/quizController");
-const { addQuestions } = require("../controllers/questionsController");
+const { addQuestions, getQuestions } = require("../controllers/questionsController");
 
 const router = express.Router();
 
@@ -13,6 +13,7 @@ router.post("/quiz/add/questions", addQuestions);
 /* GET methods */
 router.get("/announcements/:classroom_id", getAnnouncements);
 router.get("/quiz/:course_id", getQuizzes);
+router.get("/quiz/questions/:quiz_id", getQuestions);
 
 /* DELETE methods */
 router.delete("/announcements/delete/:id", deleteAnnouncement);
