@@ -2,6 +2,7 @@ const express = require("express");
 const { addAnnouncements, upload, getAnnouncements, deleteAnnouncement, updateAnnouncement } = require("../controllers/announcementsController");
 const { addQuiz, getQuizzes, deleteQuiz, editQuiz } = require("../controllers/quizController");
 const { addQuestions, getQuestions } = require("../controllers/questionsController");
+const { addStudentAnswers } = require("../controllers/studentAnswersController");
 
 const router = express.Router();
 
@@ -9,6 +10,7 @@ const router = express.Router();
 router.post("/announcements/add", upload.single("file"), addAnnouncements);
 router.post("/quiz/add", addQuiz);
 router.post("/quiz/add/questions", addQuestions);
+router.post("/quiz/submission", addStudentAnswers)
 
 /* GET methods */
 router.get("/announcements/:classroom_id", getAnnouncements);
