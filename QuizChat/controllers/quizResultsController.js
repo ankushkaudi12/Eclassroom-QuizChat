@@ -2,6 +2,10 @@ const db = require('../database/connection');
 
 const calculateAndStoreScores = async (req, res) => {
   try {
+    const { quiz_id } = req.body;
+    if (!quiz_id) {
+      return res.status(400).json({ error: 'Quiz ID is required.' });
+    }
     const query = `
       INSERT INTO quiz_results (student_id, quiz_id, score)
       SELECT
@@ -11,11 +15,12 @@ const calculateAndStoreScores = async (req, res) => {
       FROM student_answers sa
       JOIN questions q ON sa.question_id = q.id
       WHERE sa.selected_answer = q.correct_answer
+        AND q.quiz_id = ?
       GROUP BY sa.student_id, q.quiz_id
       ON DUPLICATE KEY UPDATE score = VALUES(score);
     `;
 
-    await db.execute(query);
+    await db.execute(query, [quiz_id]);
 
     res.status(200).json({ message: 'Scores calculated and stored successfully.' });
   } catch (error) {
@@ -25,11 +30,10 @@ const calculateAndStoreScores = async (req, res) => {
 };
 
 const getQuizResults = async (req, res) => {
-    const { quiz_id } = req.params.quiz_id;
+    const { quiz_id } = req.params;
     
     try {
         const query = `
-        SELECT
             SELECT * FROM quiz_results WHERE quiz_id = ?;
         `;
     

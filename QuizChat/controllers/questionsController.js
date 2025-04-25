@@ -59,4 +59,21 @@ const getQuestions = async (req, res) => {
     }
 }
 
-module.exports = { addQuestions, getQuestions };
+const deleteQuestion = async (req, res) => {
+    const questionId = req.params.id;
+
+    try {
+        const result = await db.execute("DELETE FROM questions WHERE id = ?", [questionId]);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: "Question not found" });
+        }
+
+        res.status(200).json({ message: "Question deleted successfully" });
+    } catch (error) {
+        console.error("❌ Error deleting question:", error);
+        res.status(500).json({ error: "Failed to delete question" });
+    }
+}
+
+module.exports = { addQuestions, getQuestions, deleteQuestion };

@@ -1,11 +1,7 @@
 const pool = require('../database/connection'); // Adjust path to your db.js
 
 const addStudentAnswers = async (req, res) => {
-    console.log("==== Received Request ====");
-    console.log("Raw body:", req.body);
-    console.log("Type of req.body:", typeof req.body);
     const { answers } = req.body;
-    console.log("Extracted answers:", answers);
 
     if (!Array.isArray(answers) || answers.length === 0) {
         return res.status(400).json({ message: "Answers array is required and cannot be empty." });
