@@ -1,6 +1,9 @@
 const db = require('../database/connection');
 
 const calculateAndStoreScores = async (req, res) => {
+  console.log('Calculating and storing scores...');
+  console.log(req.body);
+  
   try {
     const { quiz_id } = req.body;
     if (!quiz_id) {
@@ -22,7 +25,7 @@ const calculateAndStoreScores = async (req, res) => {
 
     await db.execute(query, [quiz_id]);
 
-    res.status(200).json({ message: 'Scores calculated and stored successfully.' });
+    res.status(200).json({ message: 'Scores calculated' });
   } catch (error) {
     console.error('Error calculating scores:', error);
     res.status(500).json({ error: 'Internal Server Error' });

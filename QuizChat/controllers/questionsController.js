@@ -76,4 +76,27 @@ const deleteQuestion = async (req, res) => {
     }
 }
 
-module.exports = { addQuestions, getQuestions, deleteQuestion };
+const getQuizName = async (req, res) => {
+    const quiz_id = req.params.quiz_id;
+
+    try {
+        const [rows] = await db.execute(
+            "SELECT name, start_time, end_time, timer FROM quizzes WHERE id = ?", [quiz_id]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({ error: "Quiz not found" });
+        }
+
+        const { name, start_time, end_time, timer } = rows[0];
+
+        res.status(200).json({ name, start_time, end_time, timer });
+    } catch (error) {
+        console.error("❌ Error fetching quiz data:", error);
+        res.status(500).json({ error: "Failed to fetch quiz data" });
+    }
+};
+
+
+
+module.exports = { addQuestions, getQuestions, deleteQuestion, getQuizName };

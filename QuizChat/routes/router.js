@@ -1,7 +1,7 @@
 const express = require("express");
 const { addAnnouncements, getAnnouncements, deleteAnnouncement, updateAnnouncement } = require("../controllers/announcementsController");
 const { addQuiz, getQuizzes, deleteQuiz, editQuiz } = require("../controllers/quizController");
-const { addQuestions, getQuestions, deleteQuestion } = require("../controllers/questionsController");
+const { addQuestions, getQuestions, deleteQuestion, getQuizName } = require("../controllers/questionsController");
 const { addStudentAnswers } = require("../controllers/studentAnswersController");
 const { calculateAndStoreScores, getQuizResults } = require("../controllers/quizResultsController");
 const { addNotes, upload, getNotes, deleteNotes, updateNotes } = require("../controllers/notesController");
@@ -22,6 +22,7 @@ router.get("/notes/:classroom_id", getNotes);
 router.get("/quiz/:course_id", getQuizzes);
 router.get("/quiz/questions/:quiz_id", getQuestions);
 router.get("/quiz/results/:quiz_id", getQuizResults);
+router.get("/quiz/name/:quiz_id", getQuizName);
 
 
 /* DELETE methods */
