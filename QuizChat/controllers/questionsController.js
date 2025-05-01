@@ -50,7 +50,7 @@ const getQuestions = async (req, res) => {
 
     try {
         const [result] = await db.execute(
-            "SELECT id, question, option1, option2, option3, option4 FROM questions WHERE quiz_id = ?", [quiz_id]);
+            "SELECT id, question, option1, option2, option3, option4, correct_answer FROM questions WHERE quiz_id = ?", [quiz_id]);
 
         res.status(200).json(result);
     } catch (error) {
