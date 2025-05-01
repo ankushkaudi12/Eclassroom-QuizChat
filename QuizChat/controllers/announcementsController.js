@@ -24,7 +24,7 @@ const getAnnouncements = async (req, res) => {
       "SELECT * FROM announcements WHERE classroom_id = ?",
       [classroom_id]
     );
-    console.log("Announcements fetched successfully");
+    // console.log("Announcements fetched successfully");
     return res.status(201).json(announcements);
   } catch (error) {
     console.error("Error fetching announcements: ", error);
