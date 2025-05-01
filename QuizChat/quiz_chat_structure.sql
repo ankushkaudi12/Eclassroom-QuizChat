@@ -28,9 +28,8 @@ CREATE TABLE `announcements` (
   `announcement_time` varchar(45) DEFAULT 'CURRENT_TIMESTAMP',
   `subject` varchar(100) NOT NULL,
   `description` text,
-  `attachment` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -47,7 +46,46 @@ CREATE TABLE `classroom_comments` (
   `classroom_id` varchar(45) DEFAULT NULL,
   `comment` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `courses`
+--
+
+DROP TABLE IF EXISTS `courses`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `courses` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `credicts` varchar(255) DEFAULT NULL,
+  `duration` varchar(255) DEFAULT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `faculty_id` bigint DEFAULT NULL,
+  `sem` int DEFAULT NULL,
+  `year` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK7tcden6kc8rs1p43l571y194u` (`faculty_id`),
+  CONSTRAINT `FK7tcden6kc8rs1p43l571y194u` FOREIGN KEY (`faculty_id`) REFERENCES `users` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `notes`
+--
+
+DROP TABLE IF EXISTS `notes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `notes` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `classroom_id` varchar(45) DEFAULT NULL,
+  `notes_announcement_time` varchar(45) DEFAULT 'CURRENT_TIMESTAMP',
+  `subject` varchar(100) NOT NULL,
+  `description` text,
+  `attachment` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -67,7 +105,7 @@ CREATE TABLE `questions` (
   `option4` text,
   `correct_answer` tinyint DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -82,9 +120,10 @@ CREATE TABLE `quiz_results` (
   `quiz_id` int NOT NULL,
   `student_id` varchar(50) DEFAULT NULL,
   `score` int DEFAULT NULL,
+  `name` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_student_quiz` (`student_id`,`quiz_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -99,10 +138,11 @@ CREATE TABLE `quizzes` (
   `name` varchar(45) DEFAULT NULL,
   `course_id` varchar(50) DEFAULT NULL,
   `description` text,
-  `start_time` datetime DEFAULT NULL,
-  `end_time` datetime DEFAULT NULL,
+  `start_time` datetime NOT NULL,
+  `end_time` datetime NOT NULL,
+  `timer` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -118,8 +158,57 @@ CREATE TABLE `student_answers` (
   `question_id` int NOT NULL,
   `selected_answer` tinyint NOT NULL,
   `submitted_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `name` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `student_courses`
+--
+
+DROP TABLE IF EXISTS `student_courses`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `student_courses` (
+  `student_id` bigint NOT NULL,
+  `course_id` bigint NOT NULL,
+  PRIMARY KEY (`student_id`,`course_id`),
+  KEY `FKsfpq78oyrqua1h0obpl7ulc18` (`course_id`),
+  CONSTRAINT `FK4celjueb4wixygpkjagooyeok` FOREIGN KEY (`student_id`) REFERENCES `users` (`user_id`),
+  CONSTRAINT `FKsfpq78oyrqua1h0obpl7ulc18` FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `users` (
+  `user_id` bigint NOT NULL AUTO_INCREMENT,
+  `created_at` datetime(6) NOT NULL,
+  `created_by` bigint NOT NULL,
+  `updated_at` datetime(6) DEFAULT NULL,
+  `updated_by` bigint DEFAULT NULL,
+  `date_of_birth` date DEFAULT NULL,
+  `email` varchar(255) NOT NULL,
+  `first_name` varchar(255) NOT NULL,
+  `gender` enum('FEMALE','MALE','OTHER') DEFAULT NULL,
+  `last_name` varchar(255) NOT NULL,
+  `password_hash` varchar(255) NOT NULL,
+  `phone_number` varchar(255) DEFAULT NULL,
+  `role` enum('ADMIN','STUDENT','TEACHER') NOT NULL,
+  `role_number` int NOT NULL,
+  `status` enum('ACTIVE','BANNED','INACTIVE') NOT NULL,
+  `sem` int DEFAULT NULL,
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `UK6dotkott2kjsp8vw4d0m25fb7` (`email`),
+  UNIQUE KEY `UK5xrau0td1i56im8s1qskup2ar` (`role_number`),
+  CONSTRAINT `users_chk_1` CHECK ((`sem` between 1 and 8))
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -131,4 +220,4 @@ CREATE TABLE `student_answers` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-24 16:42:10
+-- Dump completed on 2025-05-01 21:39:52
