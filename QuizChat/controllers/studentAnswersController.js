@@ -1,7 +1,7 @@
 const db = require('../database/connection'); // Adjust path to your db.js
 
 const submitAnswersAndCalculateScoreForStudent = async (req, res) => {
-    const { answers, quizId } = req.body;
+    const { answers, quizId, name } = req.body;
     console.log(req.body);
 
 
@@ -14,8 +14,8 @@ const submitAnswersAndCalculateScoreForStudent = async (req, res) => {
     }
 
     const insertQuery = `
-        INSERT INTO student_answers (student_id, question_id, selected_answer)
-        VALUES (?, ?, ?)
+        INSERT INTO student_answers (student_id, question_id, selected_answer, name)
+        VALUES (?, ?, ?, ?)
     `;
 
     const connection = await db.getConnection();
@@ -40,24 +40,29 @@ const submitAnswersAndCalculateScoreForStudent = async (req, res) => {
                 student_id,
                 question_id,
                 selected_answer,
+                name
             ]);
         }
 
         const scoreQuery = `
-    INSERT INTO quiz_results (student_id, quiz_id, score)
+    INSERT INTO quiz_results (student_id, quiz_id, score, name)
     SELECT
         ? AS student_id,
         ? AS quiz_id,
-        COUNT(*) AS score
+        COUNT(*) AS score,
+        ? AS name
     FROM student_answers sa
     JOIN questions q ON sa.question_id = q.id
     WHERE sa.selected_answer = q.correct_answer
       AND sa.student_id = ?
       AND q.quiz_id = ?
-    ON DUPLICATE KEY UPDATE score = VALUES(score);
+    ON DUPLICATE KEY UPDATE 
+        score = VALUES(score),
+        name = VALUES(name);
 `;
 
-        await connection.query(scoreQuery, [studentId, quizId, studentId, quizId]);
+
+        await connection.query(scoreQuery, [studentId, quizId, name, studentId, quizId]);
 
 
         await connection.commit();
