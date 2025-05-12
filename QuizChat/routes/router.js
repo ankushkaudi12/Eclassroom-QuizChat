@@ -2,7 +2,7 @@ const express = require("express");
 const { addAnnouncements, getAnnouncements, deleteAnnouncement, updateAnnouncement } = require("../controllers/announcementsController");
 const { addQuiz, getQuizzes, deleteQuiz, editQuiz } = require("../controllers/quizController");
 const { addQuestions, getQuestions, deleteQuestion, getQuizName } = require("../controllers/questionsController");
-const { submitAnswersAndCalculateScoreForStudent } = require("../controllers/studentAnswersController");
+const { submitAnswersAndCalculateScoreForStudent, getStudentAnswerEntry } = require("../controllers/studentAnswersController");
 const { getQuizResults, getQuizResultOfStudent } = require("../controllers/quizResultsController");
 const { addNotes, upload, getNotes, deleteNotes, updateNotes } = require("../controllers/notesController");
 
@@ -23,6 +23,7 @@ router.get("/quiz/questions/:quiz_id", getQuestions);
 router.get("/quiz/results/:quiz_id", getQuizResults);
 router.get("/quiz/name/:quiz_id", getQuizName);
 router.get("/quiz/result/:quiz_id/:student_id", getQuizResultOfStudent);
+router.get("/quiz/question/submission/:question_id", getStudentAnswerEntry);
 
 /* DELETE methods */
 router.delete("/announcements/delete/:id", deleteAnnouncement);

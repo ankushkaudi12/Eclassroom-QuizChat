@@ -77,6 +77,19 @@ const submitAnswersAndCalculateScoreForStudent = async (req, res) => {
     }
 };
 
+const getStudentAnswerEntry = async (req, res) => {
+    const questionID = req.params.question_id;
+
+    try {
+        const [result] = await db.execute("SELECT * FROM student_answers WHERE question_id = ?", [questionID]);
+        res.json(result);
+    } catch (error) {
+        console.log("Error fetching question details");
+        
+    }
+}
+
 module.exports = {
     submitAnswersAndCalculateScoreForStudent,
+    getStudentAnswerEntry
 };
