@@ -2,8 +2,8 @@ const express = require("express");
 const { addAnnouncements, getAnnouncements, deleteAnnouncement, updateAnnouncement } = require("../controllers/announcementsController");
 const { addQuiz, getQuizzes, deleteQuiz, editQuiz } = require("../controllers/quizController");
 const { addQuestions, getQuestions, deleteQuestion, getQuizName } = require("../controllers/questionsController");
-const { addStudentAnswers } = require("../controllers/studentAnswersController");
-const { calculateAndStoreScores, getQuizResults } = require("../controllers/quizResultsController");
+const { submitAnswersAndCalculateScoreForStudent, getStudentAnswerEntry } = require("../controllers/studentAnswersController");
+const { getQuizResults, getQuizResultOfStudent } = require("../controllers/quizResultsController");
 const { addNotes, upload, getNotes, deleteNotes, updateNotes } = require("../controllers/notesController");
 
 const router = express.Router();
@@ -13,8 +13,7 @@ router.post("/announcements/add", addAnnouncements);
 router.post("/notes/add", upload.single("file"), addNotes);
 router.post("/quiz/add", addQuiz);
 router.post("/quiz/add/questions", addQuestions);
-router.post("/quiz/submission", addStudentAnswers)
-router.post("/quiz/calculatescore", calculateAndStoreScores)
+router.post("/quiz/submission", submitAnswersAndCalculateScoreForStudent)
 
 /* GET methods */
 router.get("/announcements/:classroom_id", getAnnouncements);
@@ -23,7 +22,8 @@ router.get("/quiz/:course_id", getQuizzes);
 router.get("/quiz/questions/:quiz_id", getQuestions);
 router.get("/quiz/results/:quiz_id", getQuizResults);
 router.get("/quiz/name/:quiz_id", getQuizName);
-
+router.get("/quiz/result/:quiz_id/:student_id", getQuizResultOfStudent);
+router.get("/quiz/question/submission/:question_id", getStudentAnswerEntry);
 
 /* DELETE methods */
 router.delete("/announcements/delete/:id", deleteAnnouncement);

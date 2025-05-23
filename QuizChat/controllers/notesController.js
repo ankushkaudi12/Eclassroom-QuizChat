@@ -42,7 +42,6 @@ const getNotes = async (req, res) => {
       "SELECT * FROM notes WHERE classroom_id = ?",
       [classroom_id]
     );
-    console.log("Notes fetched successfully");
     return res.status(201).json(notes);
   } catch (error) {
     console.error("Error fetching notes: ", error);
