@@ -1,9 +1,9 @@
 ## Overview
-This backend service handles user and course management. Built with Spring Boot and Kotlin, it supports operations for creating users (students/faculty), managing roles, and assigning users to courses.
+This microservice supports classroom-specific features like announcements, comments, notes, and quizzes. It provides RESTful endpoints for these functionalities and interfaces with the main platform.
 
 ## Features
 
-- User creation and role assignment
-- Course creation and enrollment
-- REST API endpoints for all operations
-- Database integration with JPA
+- CRUD for announcements, notes, and comments
+- Quiz creation and responses
+- Authentication middleware
+- Integration-ready with main services
